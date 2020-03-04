@@ -20,19 +20,15 @@
     "guzzlehttp/guzzle": "^6.0.0"
   },
   "require-dev": {
-    "spryker/application": "*",
     "spryker/code-sniffer": "*",
-    "spryker/container": "*",
-    "spryker/event-dispatcher": "*",
     "spryker/installer": "*"
   },
   "suggest": {
-    "spryker/container": "Add this module when you want to use the Container.",
-    "spryker/event-dispatcher": "Add this module when you want to use the EVentDispatcher.",
-    "spryker/installer": "If you want to use Installer plugins."
+
   },
   "autoload": {
     "psr-4": {
+      "SprykerEco\\": "src/SprykerEco/"
     }
   },
   "autoload-dev": {
