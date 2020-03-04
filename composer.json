@@ -1,0 +1,53 @@
+{
+  "name": "commerce-experts/spryker-searchhub",
+  "type": "library",
+  "description": "CXP SearchHub Spryker Plugin",
+  "keywords": ["searchhub", "commerce experts", "cxp", "spryker search"],
+  "homepage": "https://www.commerce-experts.com",
+  "authors": [
+    {
+      "name": "Siegfried Schuele",
+      "email": "siegfried.schuele@commerce-experts.com",
+      "role": "COO"
+    }
+  ]
+  "license": "proprietary",
+  "require": {
+    "php": ">=7.2",
+    "spryker/search": "^8.0.0",
+    "spryker/config": "^3.0.0",
+    "spryker/kernel": "^3.30.0",
+    "guzzlehttp/guzzle": "^6.0.0",
+  },
+  "require-dev": {
+    "spryker/application": "*",
+    "spryker/code-sniffer": "*",
+    "spryker/container": "*",
+    "spryker/event-dispatcher": "*",
+    "spryker/installer": "*",
+  },
+  "suggest": {
+    "spryker/container": "Add this module when you want to use the Container.",
+    "spryker/event-dispatcher": "Add this module when you want to use the EVentDispatcher.",
+    "spryker/installer": "If you want to use Installer plugins.",
+  },
+  "autoload": {
+    "psr-4": {
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "scripts": {
+  },
+  "extra": {
+    "branch-alias": {
+    }
+  },
+  "config": {
+    "sort-packages": true
+  }
+}
