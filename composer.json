@@ -10,26 +10,26 @@
       "email": "siegfried.schuele@commerce-experts.com",
       "role": "COO"
     }
-  ]
+  ],
   "license": "proprietary",
   "require": {
     "php": ">=7.2",
     "spryker/search": "^8.0.0",
     "spryker/config": "^3.0.0",
     "spryker/kernel": "^3.30.0",
-    "guzzlehttp/guzzle": "^6.0.0",
+    "guzzlehttp/guzzle": "^6.0.0"
   },
   "require-dev": {
     "spryker/application": "*",
     "spryker/code-sniffer": "*",
     "spryker/container": "*",
     "spryker/event-dispatcher": "*",
-    "spryker/installer": "*",
+    "spryker/installer": "*"
   },
   "suggest": {
     "spryker/container": "Add this module when you want to use the Container.",
     "spryker/event-dispatcher": "Add this module when you want to use the EVentDispatcher.",
-    "spryker/installer": "If you want to use Installer plugins.",
+    "spryker/installer": "If you want to use Installer plugins."
   },
   "autoload": {
     "psr-4": {
