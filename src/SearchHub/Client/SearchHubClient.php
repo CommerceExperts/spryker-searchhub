@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Pyz\Client\SearchHub;
+namespace SearchHub\Client;
 
 use Exception;
 use Generated\Shared\Transfer\SearchhubRequestTransfer;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response;
-use Pyz\Shared\SearchHub\SearchHubConstants;
+use SearchHub\Shared\SearchHubConstants;
 use Spryker\Client\Kernel\AbstractClient;
 use Spryker\Shared\Config\Config;
 use Spryker\Shared\Log\LoggerTrait;
 
 /**
  * Class SearchhubClient
- * @package Pyz\Client\SearchHub
+ * @package SearchHub\Client
  */
 class SearchHubClient extends AbstractClient implements SearchHubClientInterface
 {

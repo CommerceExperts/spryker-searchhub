@@ -1,6 +1,6 @@
 <?php
 
-namespace Pyz\Client\SearchHub;
+namespace SearchHub\Client;
 
 use Spryker\Client\Catalog\CatalogFactory as SprykerCatalogFactory;
 use Spryker\Client\Kernel\AbstractFactory;
@@ -12,7 +12,7 @@ class SearchHubFactory extends AbstractFactory
     /**
      * @throws \Spryker\Client\Kernel\Exception\Container\ContainerKeyNotFoundException
 
-     * @return \Pyz\Client\SearchHub\SearchHubClientInterface
+     * @return \SearchHub\Client\SearchHubClientInterface
      */
     public function getSearchHubClient()
     {

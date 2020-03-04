@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Pyz\Client\SearchHub;
+namespace SearchHub\Client;
 
 use Generated\Shared\Transfer\SearchHubRequestTransfer;
 
 /**
  * Interface SearchhubClientInterface
  *
- * @package Pyz\Client\SearchHub
+ * @package SearchHub\Client
  */
 interface SearchHubClientInterface
 {

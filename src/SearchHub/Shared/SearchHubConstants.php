@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Pyz\Shared\SearchHub;
+namespace SearchHub\Shared;
 
 /**
  * Interface SearchHubConstants
- * @package Pyz\Shared\SearchHub
+ * @package SearchHub\Shared
  */
 interface SearchHubConstants
 {

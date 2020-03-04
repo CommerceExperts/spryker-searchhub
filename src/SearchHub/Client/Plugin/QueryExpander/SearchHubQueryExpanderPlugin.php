@@ -1,6 +1,6 @@
 <?php
 
-namespace Pyz\Client\SearchHub\Plugin\QueryExpander;
+namespace SearchHub\Client\Plugin\QueryExpander;
 
 use Generated\Shared\Transfer\SearchHubRequestTransfer;
 use Spryker\Client\Kernel\AbstractPlugin;
