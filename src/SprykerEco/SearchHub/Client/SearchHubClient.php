@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace SearchHub\Client;
+namespace SprykerEco\SearchHub\Client;
 
 use Exception;
 use Generated\Shared\Transfer\SearchhubRequestTransfer;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response;
-use SearchHub\Shared\SearchHubConstants;
+use SprykerEco\SearchHub\Shared\SearchHubConstants;
 use Spryker\Client\Kernel\AbstractClient;
 use Spryker\Shared\Config\Config;
 use Spryker\Shared\Log\LoggerTrait;
 
 /**
  * Class SearchhubClient
- * @package SearchHub\Client
+ * @package SprykerEco\SearchHub\Client
  */
 class SearchHubClient extends AbstractClient implements SearchHubClientInterface
 {

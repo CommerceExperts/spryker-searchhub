@@ -1,6 +1,6 @@
 <?php
 
-namespace SearchHub\Client\Plugin\QueryExpander;
+namespace SprykerEco\SearchHub\Client\Plugin\QueryExpander;
 
 use Generated\Shared\Transfer\SearchHubRequestTransfer;
 use Spryker\Client\Kernel\AbstractPlugin;
