@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace SprykerEco\SearchHub\Client;
+namespace SearchHub\Client;
 
 use Generated\Shared\Transfer\SearchHubRequestTransfer;
 
 /**
  * Interface SearchhubClientInterface
  *
- * @package SprykerEco\SearchHub\Client
+ * @package SearchHub\Client
  */
 interface SearchHubClientInterface
 {

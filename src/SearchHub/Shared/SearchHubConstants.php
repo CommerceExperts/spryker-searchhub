@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace SprykerEco\SearchHub\Shared;
+namespace SearchHub\Shared;
 
 /**
  * Interface SearchHubConstants
- * @package SprykerEco\SearchHub\Shared
+ * @package SearchHub\Shared
  */
 interface SearchHubConstants
 {
