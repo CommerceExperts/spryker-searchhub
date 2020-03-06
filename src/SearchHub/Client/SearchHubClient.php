@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SearchHub\Client;
 
 use Exception;
-use Generated\Shared\Transfer\SearchhubRequestTransfer;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response;
@@ -27,32 +26,30 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
     use LoggerTrait;
 
     /**
-     * Optimize Query
+     * Optimize Query by sending the userQuery to search|hub
      *
-     * @param SearchHubRequestTransfer $searchHubRequestTransfer
+     * @param SearchHubRequest $searchHubRequest
      *
-     * @return SearchhubRequestTransfer
-     *@throws Exception
+     * @return SearchHubRequest
+     * @throws Exception
      *
      */
-    public function optimizeQuery(SearchhubRequestTransfer $searchHubRequestTransfer): SearchhubRequestTransfer
+    public function optimizeQuery(SearchHubRequest $searchHubRequest): SearchHubRequest
     {
         $client = $this->getHttpClient();
-        $uri = $this->getRequestUri($searchHubRequestTransfer->getUserQuery());
+        $uri = $this->getRequestUri($searchHubRequest->getUserQuery());
         try {
             $optimizedQuery = $client->get($uri);
             assert($optimizedQuery instanceof Response);
-            $searchHubRequestTransfer->setSearchQuery($optimizedQuery->getBody()->getContents());
-            $this->getLogger()->info($optimizedQuery->getStatusCode() . ": " . $optimizedQuery->getBody()->getContents());
-            $searchHubRequestTransfer->setIsException(false);
+            $searchHubRequest->setSearchQuery($optimizedQuery->getBody()->getContents());
+            $searchHubRequest->setIsException(false);
         } catch (Exception $e) {
-            $searchHubRequestTransfer->setSearchQuery($searchHubRequestTransfer->getUserQuery());
-            $searchHubRequestTransfer->setIsException(true);
-            $searchHubRequestTransfer->setExceptionMessage($e->getMessage());
+            $searchHubRequest->setSearchQuery($searchHubRequest->getUserQuery());
+            $searchHubRequest->setIsException(true);
+            $searchHubRequest->setExceptionMessage($e->getMessage());
             $this->getLogger()->error($e->getMessage());
-
         }
-        return $searchHubRequestTransfer;
+        return $searchHubRequest;
     }
 
     /**

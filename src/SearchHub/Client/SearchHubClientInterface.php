@@ -16,9 +16,9 @@ interface SearchHubClientInterface
     /**
      * Optimze Query
      *
-     * @param SearchhubRequestTransfer $searchHubRequestTransfer
+     * @param SearchhubRequestTransfer $searchHubRequest
      *
      * @return SearchhubRequestTransfer
      */
-    public function optimizeQuery(SearchHubRequestTransfer $searchHubRequestTransfer): SearchhubRequestTransfer;
+    public function optimizeQuery(SearchHubRequestTransfer $searchHubRequest): SearchhubRequestTransfer;
 }
