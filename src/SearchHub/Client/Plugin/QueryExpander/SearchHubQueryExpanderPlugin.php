@@ -3,6 +3,7 @@
 namespace SearchHub\Client\Plugin\QueryExpander;
 
 use Generated\Shared\Transfer\SearchHubRequestTransfer;
+use SearchHub\Client\SearchHubClient;
 use Spryker\Client\Kernel\AbstractPlugin;
 use Spryker\Client\Search\Dependency\Plugin\QueryExpanderPluginInterface;
 use Spryker\Client\Search\Dependency\Plugin\QueryInterface;
@@ -23,15 +24,15 @@ class SearchHubQueryExpanderPlugin extends AbstractPlugin implements QueryExpand
      */
     public function expandQuery(QueryInterface $searchQuery, array $requestParameters = [])
     {
-        $searchHubClient = $this->getFactory()->getSearchHubClient();
+        $searchHubClient = new SearchHubClient();
         $searchHubRequestTransfer = new SearchHubRequestTransfer();
         $searchHubRequestTransfer->setUserQuery($searchQuery->getSearchString());
-        $this->getLogger()->info("before optimize");
         $searchHubRequestTransfer = $searchHubClient->optimizeQuery($searchHubRequestTransfer);
         $optimizedQuery = $searchHubRequestTransfer->getSearchQuery();
-        $this->getLogger()->info($searchQuery->getSearchString() . " -> " . $optimizedQuery);
+        if ($searchQuery->getSearchString() !== $optimizedQuery) {
+            $this->getLogger()->info("searchhub optimized query [" . $searchQuery->getSearchString() . "] -> [" . $optimizedQuery . "]");
+        }
         $searchQuery->setSearchString($optimizedQuery);
-        $this->getLogger()->info("after optimize");
         return $searchQuery;
     }
 
