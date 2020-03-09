@@ -14,11 +14,12 @@ use Generated\Shared\Transfer\SearchHubRequestTransfer;
 interface SearchHubClientInterface
 {
     /**
-     * Optimze Query
+     * Optimize Query by sending it to searchhub checking whether there is a better performing
+     * variant of the same search
      *
-     * @param SearchhubRequestTransfer $searchHubRequest
+     * @param SearchhubRequest $searchHubRequest
      *
-     * @return SearchhubRequestTransfer
+     * @return SearchhubRequest
      */
-    public function optimizeQuery(SearchHubRequestTransfer $searchHubRequest): SearchhubRequestTransfer;
+    public function optimizeQuery(SearchHubRequest $searchHubRequest): SearchhubRequest;
 }
