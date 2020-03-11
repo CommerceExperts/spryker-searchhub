@@ -2,12 +2,12 @@
 
 provided bei CXP Commerce Experts (https://www.commerce-experts.com)
 
-##Installation
+## Installation
 
 ```
 composer require  "commerce-experts/spryker-searchhub"
 ```
 
-##Configuration
+## Configuration
 
 See details in ```config/config.dist.php```
