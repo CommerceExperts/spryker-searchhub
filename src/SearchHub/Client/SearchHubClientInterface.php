@@ -22,4 +22,14 @@ interface SearchHubClientInterface
      * @return SearchhubRequest
      */
     public function optimizeQuery(SearchHubRequest $searchHubRequest): SearchhubRequest;
+
+    /**
+     * Optimize Suggest Query by sending it to searchhub checking whether there is good suggestion
+     *
+     * @param SearchhubRequest $searchHubRequest
+     *
+     * @return SearchhubRequest
+     */
+    public function optimizeSuggestQuery(SearchHubRequest $searchHubRequest): SearchhubRequest;
+
 }

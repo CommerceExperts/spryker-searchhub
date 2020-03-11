@@ -5,8 +5,8 @@ namespace SearchHub\Client\Plugin\QueryExpander;
 use SearchHub\Client\SearchHubClient;
 use SearchHub\Client\SearchHubRequest;
 use Spryker\Client\Kernel\AbstractPlugin;
-use Spryker\Client\Search\Dependency\Plugin\QueryExpanderPluginInterface;
-use Spryker\Client\Search\Dependency\Plugin\QueryInterface;
+use Spryker\Client\SearchExtension\Dependency\Plugin\QueryExpanderPluginInterface;
+use Spryker\Client\SearchExtension\Dependency\Plugin\QueryInterface;
 use Spryker\Shared\Log\LoggerTrait;
 
 class SearchHubQueryExpanderPlugin extends AbstractPlugin implements QueryExpanderPluginInterface

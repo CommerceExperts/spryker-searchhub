@@ -13,12 +13,12 @@ interface SearchHubConstants
     /**
      * @var string
      */
-    public const API_KEY = 'SEARCHHUB:API_KEY';
+    public const SMARTSUGGEST_ENDPOINT = 'SEARCHHUB:SMARTSUGGEST_ENDPOINT';
 
     /**
      * @var string
      */
-    public const ENDPOINT = 'SEARCHHUB:ENDPOINT';
+    public const SMARTQUERY_ENDPOINT = 'SEARCHHUB:SMARTQUERY_ENDPOINT';
 
     /**
      * @var string

@@ -26,8 +26,6 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
     use LoggerTrait;
 
     /**
-     * Optimize Query by sending the userQuery to search|hub
-     *
      * @param SearchHubRequest $searchHubRequest
      *
      * @return SearchHubRequest
@@ -36,8 +34,25 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
      */
     public function optimizeQuery(SearchHubRequest $searchHubRequest): SearchHubRequest
     {
+        return $this->optimize($searchHubRequest, false);
+    }
+
+    /**
+     * @param SearchHubRequest $searchHubRequest
+     *
+     * @return SearchHubRequest
+     * @throws Exception
+     *
+     */
+    public function optimizeSuggestQuery(SearchHubRequest $searchHubRequest): SearchHubRequest
+    {
+        return $this->optimize($searchHubRequest, true);
+    }
+
+    private function optimize(SearchHubRequest $searchHubRequest, bool $isSuggest)
+    {
         $client = $this->getHttpClient();
-        $uri = $this->getRequestUri($searchHubRequest->getUserQuery());
+        $uri = $this->getRequestUri($searchHubRequest->getUserQuery(), $isSuggest);
         try {
             $optimizedQuery = $client->get($uri);
             assert($optimizedQuery instanceof Response);
@@ -50,6 +65,7 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
             $this->getLogger()->error($e->getMessage());
         }
         return $searchHubRequest;
+
     }
 
     /**
@@ -70,7 +86,7 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
     }
 
     /**
-     * Get Request Uri
+     * Get Request Uri for suggest or default search
      *
      * @throws Exception
      *
@@ -78,9 +94,9 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
      *
      * @return string
      */
-    protected function getRequestUri(string $userQuery): string
+    protected function getRequestUri(string $userQuery, bool $isSuggest): string
     {
-        $endpoint = Config::get(SearchHubConstants::ENDPOINT);
+        $endpoint = Config::get($isSuggest ? SearchHubConstants::SMARTSUGGEST_ENDPOINT : SearchHubConstants::SMARTQUERY_ENDPOINT);
         return $endpoint . '?' . http_build_query(
                 ['userQuery' => $userQuery],
                 '',
