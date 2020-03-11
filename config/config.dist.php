@@ -27,5 +27,6 @@ $config[SearchHubConstants::USE_SAAS_MODE] = false;
 $config[SearchHubConstants::API_KEY] = "request your api key from info@commerce-experts.com";
 $config[SearchHubConstants::MAPPING_QUERIES_ENDPOINT] = "https://query.searchhub.io/mappingData?tenant=demo.spryker";
 $config[SearchHubConstants::MAPPING_SUGGESTS_ENDPOINT] = "https://query.searchhub.io/suggest/data?tenant=demo.spryker";
+$config[SearchHubConstants::MAPPING_LASTMODIFIED_ENDPOINT] = "https://query.searchhub.io/modificationTime?tenant=demo.spryker";
 $config[SearchHubConstants::MAPPING_CACHE] = new FilesystemCache(sprintf('%s/data/cache/searchhub',APPLICATION_ROOT_DIR));
 $config[SearchHubConstants::MAPPING_CACHE_TTL] = "600";

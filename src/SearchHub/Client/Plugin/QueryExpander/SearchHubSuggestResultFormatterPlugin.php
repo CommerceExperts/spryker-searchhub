@@ -64,6 +64,7 @@ class SearchHubSuggestResultFormatterPlugin extends CompletionResultFormatterPlu
                 }
             }
         } else {
+            //downwards compatibility. Will be removed in future.
             $completions[] = $searchHubRequest->getSearchQuery();
         }
         return $completions;

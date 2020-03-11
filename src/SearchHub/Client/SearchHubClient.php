@@ -36,7 +36,7 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
     public function optimizeQuery(SearchHubRequest $searchHubRequest): SearchHubRequest
     {
         if (Config::get(SearchHubConstants::USE_SAAS_MODE)) {
-            return $this->optimize($searchHubRequest, false);
+            return $this->optimizeSaaS($searchHubRequest, false);
         } else {
             return $this->optimizeLocal($searchHubRequest, false);
         }
@@ -52,13 +52,13 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
     public function optimizeSuggestQuery(SearchHubRequest $searchHubRequest): SearchHubRequest
     {
         if (Config::get(SearchHubConstants::USE_SAAS_MODE)) {
-            return $this->optimize($searchHubRequest, true);
+            return $this->optimizeSaaS($searchHubRequest, true);
         } else {
             return $this->optimizeLocal($searchHubRequest, true);
         }
     }
 
-    private function optimize(SearchHubRequest $searchHubRequest, bool $isSuggest)
+    private function optimizeSaaS(SearchHubRequest $searchHubRequest, bool $isSuggest)
     {
         $client = $this->getHttpClient();
         $uri = $this->getRequestUri($searchHubRequest->getUserQuery(), $isSuggest);
@@ -84,6 +84,7 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
             $searchHubRequest->setSearchQuery($mappings[$searchHubRequest->getUserQuery()]);
             return $searchHubRequest;
         }
+        //downwards compatibility for suggest api
         $searchHubRequest->setSearchQuery($searchHubRequest->getUserQuery());
 
         return $searchHubRequest;
@@ -108,7 +109,7 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
     }
 
     /**
-     * Get Request Uri for suggest or default search
+     * Get Request Uri for suggest or default search (SaaS mode)
      *
      * @throws Exception
      *
@@ -138,24 +139,9 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
         $mappings = $this->loadMappingsFromCache($key);
         if ($mappings === null ) {
             try {
-                $client = $this->getHttpClient();
-                $mappingsResponse = $client->get($uri, [
-                    'headers' => ['apikey' => Config::get(SearchHubConstants::API_KEY)]
-                ]);
+                $mappingsResponse = $this->getHttpClient()->get($uri, ['headers' => ['apikey' => Config::get(SearchHubConstants::API_KEY)]]);
                 assert($mappingsResponse instanceof Response);
-                $mappingsRaw = json_decode($mappingsResponse->getBody()->getContents(), true);
-                $indexedMappings = array();
-                if (isset($mappingsRaw["mappings"]) && is_array($mappingsRaw["mappings"])) {
-                    foreach ($mappingsRaw["mappings"] as $mapping) {
-                        $indexedMappings[$mapping["from"]] = $mapping["to"];
-                    }
-                } else if (isset($mappingsRaw["suggestions"]) && is_array($mappingsRaw["suggestions"])) {
-                    foreach ($mappingsRaw["suggestions"] as $suggestion) {
-                        foreach ($suggestion["variants"] as $variant) {
-                            $indexedMappings[$variant] = $suggestion["bestQuery"];
-                        }
-                    }
-                }
+                $indexedMappings = $this->indexMappings(json_decode($mappingsResponse->getBody()->getContents(), true));
                 $cache->write($key, json_encode($indexedMappings));
                 return $indexedMappings;
             } catch (Exception $e) {
@@ -166,11 +152,41 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
         return json_decode($mappings, true);
     }
 
-    private function loadMappingsFromCache(string $key)
+    private function loadMappingsFromCache(string $cacheFile)
     {
-        if (file_exists($key) && time() - filemtime($key) < Config::get(SearchHubConstants::MAPPING_CACHE_TTL) ) {
-            return file_get_contents($key);
+        if (file_exists($cacheFile) ) {
+            if (time() - filemtime($cacheFile) < Config::get(SearchHubConstants::MAPPING_CACHE_TTL)) {
+                return file_get_contents($cacheFile);
+            } else {
+                $lastModifiedResponse = $this->getHttpClient()->get(Config::get(SearchHubConstants::MAPPING_LASTMODIFIED_ENDPOINT), ['headers' => ['apikey' => Config::get(SearchHubConstants::API_KEY)]]);
+                assert($lastModifiedResponse instanceof Response);
+                if (filemtime($cacheFile) > ((int)($lastModifiedResponse->getBody()->getContents()) / 1000 + Config::get(SearchHubConstants::MAPPING_CACHE_TTL))) {
+                    touch($cacheFile);
+                    return file_get_contents($cacheFile);
+                }
+            }
         }
         return null;
+    }
+
+    /**
+     * @param $mappingsRaw
+     * @return array
+     */
+    private function indexMappings($mappingsRaw): array
+    {
+        $indexedMappings = array();
+        if (isset($mappingsRaw["mappings"]) && is_array($mappingsRaw["mappings"])) {
+            foreach ($mappingsRaw["mappings"] as $mapping) {
+                $indexedMappings[$mapping["from"]] = $mapping["to"];
+            }
+        } else if (isset($mappingsRaw["suggestions"]) && is_array($mappingsRaw["suggestions"])) {
+            foreach ($mappingsRaw["suggestions"] as $suggestion) {
+                foreach ($suggestion["variants"] as $variant) {
+                    $indexedMappings[$variant] = $suggestion["bestQuery"];
+                }
+            }
+        }
+        return $indexedMappings;
     }
 }

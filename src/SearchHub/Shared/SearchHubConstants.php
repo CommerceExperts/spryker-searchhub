@@ -36,6 +36,11 @@ interface SearchHubConstants
     public const MAPPING_SUGGESTS_ENDPOINT = 'SEARCHHUB:MAPPING_SUGGESTS_ENDPOINT';
 
     /**
+     * @var string
+     */
+    public const MAPPING_LASTMODIFIED_ENDPOINT = 'SEARCHHUB:MAPPING_LASTMODIFIED_ENDPOINT';
+
+    /**
      *
      */
     public const MAPPING_CACHE = 'SEARCHHUB:MAPPING_CACHE';
