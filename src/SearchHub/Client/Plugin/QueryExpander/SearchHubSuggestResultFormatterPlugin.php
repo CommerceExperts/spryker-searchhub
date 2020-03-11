@@ -47,7 +47,7 @@ class SearchHubSuggestResultFormatterPlugin extends CompletionResultFormatterPlu
 
         $searchHubClient = new SearchHubClient();
         $searchHubRequest = new SearchHubRequest();
-        $searchHubRequest->setUserQuery($requestParameters["q"]);
+        $searchHubRequest->setUserQuery(trim(strtolower($requestParameters["q"])));
         $searchHubRequest = $searchHubClient->optimizeSuggestQuery($searchHubRequest);
 
         if ($searchHubRequest->getIsException()) {
@@ -63,6 +63,8 @@ class SearchHubSuggestResultFormatterPlugin extends CompletionResultFormatterPlu
                     }
                 }
             }
+        } else {
+            $completions[] = $searchHubRequest->getSearchQuery();
         }
         return $completions;
     }

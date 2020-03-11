@@ -12,6 +12,7 @@ use SearchHub\Shared\SearchHubConstants;
 use Spryker\Client\Kernel\AbstractClient;
 use Spryker\Shared\Config\Config;
 use Spryker\Shared\Log\LoggerTrait;
+use Twig\Cache\FilesystemCache;
 
 /**
  * Class SearchhubClient
@@ -34,7 +35,11 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
      */
     public function optimizeQuery(SearchHubRequest $searchHubRequest): SearchHubRequest
     {
-        return $this->optimize($searchHubRequest, false);
+        if (Config::get(SearchHubConstants::USE_SAAS_MODE)) {
+            return $this->optimize($searchHubRequest, false);
+        } else {
+            return $this->optimizeLocal($searchHubRequest, false);
+        }
     }
 
     /**
@@ -46,7 +51,11 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
      */
     public function optimizeSuggestQuery(SearchHubRequest $searchHubRequest): SearchHubRequest
     {
-        return $this->optimize($searchHubRequest, true);
+        if (Config::get(SearchHubConstants::USE_SAAS_MODE)) {
+            return $this->optimize($searchHubRequest, true);
+        } else {
+            return $this->optimizeLocal($searchHubRequest, true);
+        }
     }
 
     private function optimize(SearchHubRequest $searchHubRequest, bool $isSuggest)
@@ -64,6 +73,19 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
             $searchHubRequest->setExceptionMessage($e->getMessage());
             $this->getLogger()->error($e->getMessage());
         }
+        return $searchHubRequest;
+
+    }
+
+    private function optimizeLocal(SearchHubRequest $searchHubRequest, bool $isSuggest)
+    {
+        $mappings = $this->loadMappings(Config::get($isSuggest ? SearchHubConstants::MAPPING_SUGGESTS_ENDPOINT : SearchHubConstants::MAPPING_QUERIES_ENDPOINT ));
+        if (isset($mappings[$searchHubRequest->getUserQuery()]) ) {
+            $searchHubRequest->setSearchQuery($mappings[$searchHubRequest->getUserQuery()]);
+            return $searchHubRequest;
+        }
+        $searchHubRequest->setSearchQuery($searchHubRequest->getUserQuery());
+
         return $searchHubRequest;
 
     }
@@ -102,5 +124,53 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
                 '',
                 '&'
             );
+    }
+
+    /**
+     * @return array
+     * @throws Exception
+     */
+    private function loadMappings(string $uri): array
+    {
+        $cache = Config::get(SearchHubConstants::MAPPING_CACHE);
+        $key = $cache->generateKey("SearchHubClient", $uri);
+
+        $mappings = $this->loadMappingsFromCache($key);
+        if ($mappings === null ) {
+            try {
+                $client = $this->getHttpClient();
+                $mappingsResponse = $client->get($uri, [
+                    'headers' => ['apikey' => Config::get(SearchHubConstants::API_KEY)]
+                ]);
+                assert($mappingsResponse instanceof Response);
+                $mappingsRaw = json_decode($mappingsResponse->getBody()->getContents(), true);
+                $indexedMappings = array();
+                if (isset($mappingsRaw["mappings"]) && is_array($mappingsRaw["mappings"])) {
+                    foreach ($mappingsRaw["mappings"] as $mapping) {
+                        $indexedMappings[$mapping["from"]] = $mapping["to"];
+                    }
+                } else if (isset($mappingsRaw["suggestions"]) && is_array($mappingsRaw["suggestions"])) {
+                    foreach ($mappingsRaw["suggestions"] as $suggestion) {
+                        foreach ($suggestion["variants"] as $variant) {
+                            $indexedMappings[$variant] = $suggestion["bestQuery"];
+                        }
+                    }
+                }
+                $cache->write($key, json_encode($indexedMappings));
+                return $indexedMappings;
+            } catch (Exception $e) {
+                $this->getLogger()->error($e->getMessage());
+                return array();
+            }
+        }
+        return json_decode($mappings, true);
+    }
+
+    private function loadMappingsFromCache(string $key)
+    {
+        if (file_exists($key) && time() - filemtime($key) < Config::get(SearchHubConstants::MAPPING_CACHE_TTL) ) {
+            return file_get_contents($key);
+        }
+        return null;
     }
 }

@@ -24,7 +24,7 @@ class SearchHubQueryExpanderPlugin extends AbstractPlugin implements QueryExpand
     {
         $searchHubClient = new SearchHubClient();
         $searchHubRequest = new SearchHubRequest();
-        $searchHubRequest->setUserQuery($searchQuery->getSearchString());
+        $searchHubRequest->setUserQuery(trim(strtolower($searchQuery->getSearchString())));
         $searchHubRequest = $searchHubClient->optimizeQuery($searchHubRequest);
         $optimizedQuery = $searchHubRequest->getSearchQuery();
         if ($searchQuery->getSearchString() !== $optimizedQuery) {

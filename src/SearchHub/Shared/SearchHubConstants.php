@@ -24,4 +24,35 @@ interface SearchHubConstants
      * @var string
      */
     public const REQUEST_TIMEOUT = 'SEARCHHUB:REQUEST_TIMEOUT';
+
+    /**
+     * @var string
+     */
+    public const MAPPING_QUERIES_ENDPOINT = 'SEARCHHUB:MAPPING_QUERIES_ENDPOINT';
+
+    /**
+     * @var string
+     */
+    public const MAPPING_SUGGESTS_ENDPOINT = 'SEARCHHUB:MAPPING_SUGGESTS_ENDPOINT';
+
+    /**
+     *
+     */
+    public const MAPPING_CACHE = 'SEARCHHUB:MAPPING_CACHE';
+
+    /**
+     * TTL in seconds
+     */
+    public const MAPPING_CACHE_TTL = 'SEARCHHUB:MAPPING_CACHE_TTL';
+
+    /**
+     * @var string
+     */
+    public const API_KEY = 'SEARCHHUB:API_KEY';
+
+    /**
+     *
+     */
+    public const USE_SAAS_MODE = 'SEARCHHUB:USE_SAAS_MODE';
+
 }
