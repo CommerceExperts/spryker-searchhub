@@ -1,0 +1,23 @@
+namespace: SearchHubTest\Client
+
+paths:
+  tests: .
+  data: ./tests/_data
+  support: ./tests/_support
+  log: ./tests/_output
+  output: ./tests/_output
+
+bootstrap: tests/_bootstrap.php
+
+coverage:
+  enabled: true
+  remote: false
+  whitelist: { include: ['../../../../src/*'] }
+
+suites:
+  Service:
+    path: ./tests/SearchHubTest/Client
+    class_name: SearchHub
+    modules:
+      enabled:
+        - Asserts

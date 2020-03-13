@@ -4,6 +4,7 @@ namespace SearchHub\Client;
 
 class SearchHubRequest
 {
+
     /**
      * @var string|null
      */
@@ -24,6 +25,11 @@ class SearchHubRequest
      */
     protected $exceptionMessage;
 
+
+    public function __construct(string $userQuery)
+    {
+        $this->userQuery = $userQuery;
+    }
 
     /**
      * @param string|null $userQuery

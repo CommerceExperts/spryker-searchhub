@@ -1,49 +1,52 @@
 {
-  "name": "commerce-experts/spryker-searchhub",
-  "type": "library",
-  "description": "CXP SearchHub Spryker Plugin",
-  "keywords": ["searchhub", "commerce experts", "cxp", "spryker search"],
-  "homepage": "https://www.commerce-experts.com",
-  "authors": [
-    {
-      "name": "Siegfried Schuele",
-      "email": "siegfried.schuele@commerce-experts.com",
-      "role": "COO"
+    "name": "commerce-experts/spryker-searchhub",
+    "type": "library",
+    "description": "CXP SearchHub Spryker Plugin",
+    "keywords": [
+        "searchhub",
+        "commerce experts",
+        "cxp",
+        "spryker search"
+    ],
+    "homepage": "https://www.commerce-experts.com",
+    "authors": [
+        {
+            "name": "Siegfried Schuele",
+            "email": "siegfried.schuele@commerce-experts.com",
+            "role": "COO"
+        }
+    ],
+    "license": "proprietary",
+    "require": {
+        "php": ">=7.2",
+        "ext-json": "^1.6",
+        "codeception/module-phpbrowser": "^1.0.0",
+        "guzzlehttp/guzzle": "^6.0.0",
+        "spryker/config": "^3.0.0",
+        "spryker/kernel": "^3.30.0",
+        "spryker/search": "^8.0.0"
+    },
+    "require-dev": {
+        "codeception/module-asserts": "^1.1",
+        "spryker/code-sniffer": "*",
+        "spryker/testify": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "SearchHub\\": "src/SearchHub/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "SearchHubTest\\": "tests/SearchHubTest/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+        "branch-alias": []
+    },
+    "config": {
+        "sort-packages": true
     }
-  ],
-  "license": "proprietary",
-  "require": {
-    "php": ">=7.2",
-    "spryker/search": "^8.0.0",
-    "spryker/config": "^3.0.0",
-    "spryker/kernel": "^3.30.0",
-    "guzzlehttp/guzzle": "^6.0.0"
-  },
-  "require-dev": {
-    "spryker/code-sniffer": "*",
-    "spryker/installer": "*"
-  },
-  "suggest": {
-
-  },
-  "autoload": {
-    "psr-4": {
-      "SearchHub\\": "src/SearchHub/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-    }
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true,
-  "scripts": {
-  },
-  "extra": {
-    "branch-alias": {
-    }
-  },
-  "config": {
-    "sort-packages": true
-  }
 }

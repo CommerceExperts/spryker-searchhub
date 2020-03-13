@@ -10,9 +10,7 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response;
 use SearchHub\Shared\SearchHubConstants;
 use Spryker\Client\Kernel\AbstractClient;
-use Spryker\Shared\Config\Config;
 use Spryker\Shared\Log\LoggerTrait;
-use Twig\Cache\FilesystemCache;
 
 /**
  * Class SearchhubClient
@@ -24,7 +22,18 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
      * @var ClientInterface
      */
     protected $httpClient;
+
+    /**
+     * @var mixed
+     */
+    private $config;
+
     use LoggerTrait;
+
+    public function __construct($config)
+    {
+        $this->config = $config;
+    }
 
     /**
      * @param SearchHubRequest $searchHubRequest
@@ -35,14 +44,14 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
      */
     public function optimizeQuery(SearchHubRequest $searchHubRequest): SearchHubRequest
     {
-        if (Config::get(SearchHubConstants::USE_SAAS_MODE)) {
+        if (filter_var($this->config->get(SearchHubConstants::USE_SAAS_MODE), FILTER_VALIDATE_BOOLEAN)) {
             return $this->optimizeSaaS($searchHubRequest, false);
         } else {
             return $this->optimizeLocal($searchHubRequest, false);
         }
     }
 
-    /**
+    /**0
      * @param SearchHubRequest $searchHubRequest
      *
      * @return SearchHubRequest
@@ -51,7 +60,7 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
      */
     public function optimizeSuggestQuery(SearchHubRequest $searchHubRequest): SearchHubRequest
     {
-        if (Config::get(SearchHubConstants::USE_SAAS_MODE)) {
+        if (filter_var($this->config->get(SearchHubConstants::USE_SAAS_MODE), FILTER_VALIDATE_BOOLEAN)) {
             return $this->optimizeSaaS($searchHubRequest, true);
         } else {
             return $this->optimizeLocal($searchHubRequest, true);
@@ -79,7 +88,7 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
 
     private function optimizeLocal(SearchHubRequest $searchHubRequest, bool $isSuggest)
     {
-        $mappings = $this->loadMappings(Config::get($isSuggest ? SearchHubConstants::MAPPING_SUGGESTS_ENDPOINT : SearchHubConstants::MAPPING_QUERIES_ENDPOINT ));
+        $mappings = $this->loadMappings($this->config->get($isSuggest ? SearchHubConstants::MAPPING_SUGGESTS_ENDPOINT : SearchHubConstants::MAPPING_QUERIES_ENDPOINT ));
         if (isset($mappings[$searchHubRequest->getUserQuery()]) ) {
             $searchHubRequest->setSearchQuery($mappings[$searchHubRequest->getUserQuery()]);
             return $searchHubRequest;
@@ -102,7 +111,7 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
     {
         if ($this->httpClient === null) {
             $this->httpClient = new Client([
-                'timeout' => (float) Config::get(SearchHubConstants::REQUEST_TIMEOUT, 0.01),
+                'timeout' => (float) $this->config->get(SearchHubConstants::REQUEST_TIMEOUT, 0.01),
             ]);
         }
         return $this->httpClient;
@@ -119,7 +128,7 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
      */
     protected function getRequestUri(string $userQuery, bool $isSuggest): string
     {
-        $endpoint = Config::get($isSuggest ? SearchHubConstants::SMARTSUGGEST_ENDPOINT : SearchHubConstants::SMARTQUERY_ENDPOINT);
+        $endpoint = $this->config->get($isSuggest ? SearchHubConstants::SMARTSUGGEST_ENDPOINT : SearchHubConstants::SMARTQUERY_ENDPOINT);
         return $endpoint . '?' . http_build_query(
                 ['userQuery' => $userQuery],
                 '',
@@ -133,13 +142,13 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
      */
     private function loadMappings(string $uri): array
     {
-        $cache = Config::get(SearchHubConstants::MAPPING_CACHE);
+        $cache = $this->config->get(SearchHubConstants::MAPPING_CACHE);
         $key = $cache->generateKey("SearchHubClient", $uri);
 
         $mappings = $this->loadMappingsFromCache($key);
         if ($mappings === null ) {
             try {
-                $mappingsResponse = $this->getHttpClient()->get($uri, ['headers' => ['apikey' => Config::get(SearchHubConstants::API_KEY)]]);
+                $mappingsResponse = $this->getHttpClient()->get($uri, ['headers' => ['apikey' => $this->config->get(SearchHubConstants::API_KEY)]]);
                 assert($mappingsResponse instanceof Response);
                 $indexedMappings = $this->indexMappings(json_decode($mappingsResponse->getBody()->getContents(), true));
                 $cache->write($key, json_encode($indexedMappings));
@@ -155,12 +164,12 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
     private function loadMappingsFromCache(string $cacheFile)
     {
         if (file_exists($cacheFile) ) {
-            if (time() - filemtime($cacheFile) < Config::get(SearchHubConstants::MAPPING_CACHE_TTL)) {
+            if (time() - filemtime($cacheFile) < $this->config->get(SearchHubConstants::MAPPING_CACHE_TTL)) {
                 return file_get_contents($cacheFile);
             } else {
-                $lastModifiedResponse = $this->getHttpClient()->get(Config::get(SearchHubConstants::MAPPING_LASTMODIFIED_ENDPOINT), ['headers' => ['apikey' => Config::get(SearchHubConstants::API_KEY)]]);
+                $lastModifiedResponse = $this->getHttpClient()->get($this->config->get(SearchHubConstants::MAPPING_LASTMODIFIED_ENDPOINT), ['headers' => ['apikey' => $this->config->get(SearchHubConstants::API_KEY)]]);
                 assert($lastModifiedResponse instanceof Response);
-                if (filemtime($cacheFile) > ((int)($lastModifiedResponse->getBody()->getContents()) / 1000 + Config::get(SearchHubConstants::MAPPING_CACHE_TTL))) {
+                if (filemtime($cacheFile) > ((int)($lastModifiedResponse->getBody()->getContents()) / 1000 + $this->config->get(SearchHubConstants::MAPPING_CACHE_TTL))) {
                     touch($cacheFile);
                     return file_get_contents($cacheFile);
                 }

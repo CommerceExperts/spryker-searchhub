@@ -1,3 +1,7 @@
 /.idea/
 /vendor/
 composer.lock
+/.phpunit.result.cache
+/tests/_bootstrap.php
+/tests/_data/
+/tests/_output/

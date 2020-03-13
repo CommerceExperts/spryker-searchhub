@@ -2,14 +2,9 @@
 
 namespace SearchHub\Client\Plugin\QueryExpander;
 
-use Generated\Shared\Search\PageIndexMap;
-use SearchHub\Client\SearchHubClient;
+use SearchHub\Client\SearchHubFactory;
 use SearchHub\Client\SearchHubRequest;
-use Spryker\Client\Kernel\AbstractPlugin;
 use Spryker\Client\SearchElasticsearch\Plugin\QueryExpander\SuggestionByTypeQueryExpanderPlugin;
-use Spryker\Client\SearchExtension\Dependency\Plugin\QueryExpanderPluginInterface;
-use Spryker\Client\SearchExtension\Dependency\Plugin\QueryInterface;
-use Spryker\Client\SearchExtension\Dependency\Plugin\ResultFormatterPluginInterface;
 use Spryker\Client\SearchElasticsearch\Plugin\ResultFormatter\CompletionResultFormatterPlugin;
 use Spryker\Shared\Log\LoggerTrait;
 
@@ -45,10 +40,8 @@ class SearchHubSuggestResultFormatterPlugin extends CompletionResultFormatterPlu
             return $completions;
         }
 
-        $searchHubClient = new SearchHubClient();
-        $searchHubRequest = new SearchHubRequest();
-        $searchHubRequest->setUserQuery(trim(strtolower($requestParameters["q"])));
-        $searchHubRequest = $searchHubClient->optimizeSuggestQuery($searchHubRequest);
+        $searchHubRequest = $this->factory()->getSearchHubClient()
+            ->optimizeSuggestQuery(new SearchHubRequest(trim(strtolower($requestParameters["q"]))));
 
         if ($searchHubRequest->getIsException()) {
             return $completions;
@@ -68,6 +61,14 @@ class SearchHubSuggestResultFormatterPlugin extends CompletionResultFormatterPlu
             $completions[] = $searchHubRequest->getSearchQuery();
         }
         return $completions;
+    }
+
+    /**
+     * @return SearchHubFactory
+     */
+    protected function factory(): SearchHubFactory
+    {
+        return new SearchHubFactory();
     }
 
 }
