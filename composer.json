@@ -20,7 +20,6 @@
     "require": {
         "php": ">=7.2",
         "ext-json": "^1.6",
-        "codeception/module-phpbrowser": "^1.0.0",
         "guzzlehttp/guzzle": "^6.0.0",
         "spryker/config": "^3.0.0",
         "spryker/kernel": "^3.30.0",
