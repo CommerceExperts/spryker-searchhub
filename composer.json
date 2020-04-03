@@ -41,7 +41,7 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "extra": {SearchHubTest
+    "extra": {
         "branch-alias": []
     },
     "config": {
