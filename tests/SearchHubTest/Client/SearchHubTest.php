@@ -91,11 +91,12 @@ class SearchHubTest extends Unit
      */
     public function testOptimizeSuggestSaas()
     {
+        $this->markTestSkipped("apply to new SaaS model first");
+
         $factory = $this->factory();
         $searchHubRequest = $factory->getSearchHubClient(ConfigMock::FLAVOUR_SAAS)->optimizeSuggestQuery(new SearchHubRequest("notebokk"));
 
-        //TODO: fix assert
-        //$this->assertEquals(json_decode($searchHubRequest->getSearchQuery(), true)[0]["suggestions"][0], "notebook");
+        $this->assertEquals(json_decode($searchHubRequest->getSearchQuery(), true)[0]["suggestions"][0], "notebook");
     }
 
     /**
