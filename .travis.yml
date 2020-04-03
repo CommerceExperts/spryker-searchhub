@@ -4,7 +4,7 @@ php:
   - 7.2
 
 before_script:
-  - composer install
+  - COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install --prefer-dist --no-interaction
 
 script:
   - vendor/bin/codecept run
