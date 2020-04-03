@@ -2,6 +2,6 @@
 /vendor/
 composer.lock
 /.phpunit.result.cache
-/tests/_bootstrap.php
+/tests/_bootstrap-local.php
 /tests/_data/
 /tests/_output/
