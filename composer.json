@@ -21,15 +21,13 @@
         "php": ">=7.2",
         "ext-json": "^1.6",
         "guzzlehttp/guzzle": "^6.0.0",
-        "spryker/config": "^3.0.0",
         "spryker/kernel": "^3.30.0",
-        "spryker/search": "^8.0.0"
+        "spryker/log": "^3.0.0",
+        "spryker/search-elasticsearch": "^1.0.0"
     },
     "require-dev": {
         "codeception/codeception": "^4.1",
-        "codeception/module-asserts": "^1.1",
-        "spryker/code-sniffer": "*",
-        "spryker/testify": "*"
+        "codeception/module-asserts": "^1.1"
     },
     "autoload": {
         "psr-4": {
@@ -43,7 +41,7 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "extra": {
+    "extra": {SearchHubTest
         "branch-alias": []
     },
     "config": {
