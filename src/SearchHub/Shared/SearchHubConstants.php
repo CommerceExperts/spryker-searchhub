@@ -56,6 +56,11 @@ interface SearchHubConstants
     public const API_KEY = 'SEARCHHUB:API_KEY';
 
     /**
+     * @var string
+     */
+    public const ACCOUNT_NAME = 'SEARCHHUB:ACCOUNT_NAME';
+
+    /**
      *
      */
     public const USE_SAAS_MODE = 'SEARCHHUB:USE_SAAS_MODE';

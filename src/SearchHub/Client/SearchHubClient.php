@@ -154,7 +154,7 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
                 $cache->write($key, json_encode($indexedMappings));
                 return $indexedMappings;
             } catch (Exception $e) {
-                //$this->getLogger()->error($e->getMessage());
+                $this->getLogger()->error($e->getMessage());
                 return array();
             }
         }
