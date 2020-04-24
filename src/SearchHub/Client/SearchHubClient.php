@@ -90,7 +90,20 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
     {
         $mappings = $this->loadMappings($this->config->get($isSuggest ? SearchHubConstants::MAPPING_SUGGESTS_ENDPOINT : SearchHubConstants::MAPPING_QUERIES_ENDPOINT ));
         if (isset($mappings[$searchHubRequest->getUserQuery()]) ) {
-            $searchHubRequest->setSearchQuery($mappings[$searchHubRequest->getUserQuery()]);
+            $mapping = $mappings[$searchHubRequest->getUserQuery()];
+            if (is_array($mapping)) {
+                if (isset($mapping["redirect"]) && strpos($mapping["redirect"], 'http') === 0) {
+                    header('Location: ' . $mapping["redirect"]);
+                    exit;
+                }
+                else {
+                    //v2
+                    $searchHubRequest->setSearchQuery($mapping["masterQuery"]);
+                }
+            } else {
+                //v1
+                $searchHubRequest->setSearchQuery($mapping);
+            }
             return $searchHubRequest;
         }
         //downwards compatibility for suggest api
@@ -185,11 +198,22 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
     private function indexMappings($mappingsRaw): array
     {
         $indexedMappings = array();
-        if (isset($mappingsRaw["mappings"]) && is_array($mappingsRaw["mappings"])) {
+        if (isset($mappingsRaw["mappings"]) && is_array($mappingsRaw["mappings"])) { // v1
             foreach ($mappingsRaw["mappings"] as $mapping) {
                 $indexedMappings[$mapping["from"]] = $mapping["to"];
             }
-        } else if (isset($mappingsRaw["suggestions"]) && is_array($mappingsRaw["suggestions"])) {
+        }
+        else if (isset($mappingsRaw["clusters"]) && is_array($mappingsRaw["clusters"])) { //v2
+            foreach ($mappingsRaw["clusters"] as $mapping) {
+                foreach ($mapping["queries"] as $variant) {
+                    $indexedMappings[$variant] = array();
+                    $indexedMappings[$variant]["masterQuery"] = $mapping["masterQuery"];
+                    if ($mapping["redirect"] !== null) {
+                        $indexedMappings[$variant]["redirect"] = $mapping["redirect"];
+                    }
+                }
+            }
+        } else if (isset($mappingsRaw["suggestions"]) && is_array($mappingsRaw["suggestions"])) { // suggest
             foreach ($mappingsRaw["suggestions"] as $suggestion) {
                 foreach ($suggestion["variants"] as $variant) {
                     $indexedMappings[$variant] = $suggestion["bestQuery"];
