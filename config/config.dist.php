@@ -10,6 +10,10 @@ use Twig\Cache\FilesystemCache;
 * replace 'new CompletionResultFormatterPlugin(),' with 'new SearchHubSuggestResultFormatterPlugin(),'
 * in \Pyz\Client\Catalog\CatalogDependencyProvider::createSuggestionResultFormatterPlugins
 * to activate optimized SUGGEST results
+*
+* add 'new SearchStrategyOptimizerQueryExpanderPlugin(),' in \Pyz\Client\Catalog\CatalogDependencyProvider::createCatalogSearchQueryExpanderPlugins
+* just after 'new SearchHubQueryExpanderPlugin(),'
+* to optimize the search strategy used by Spryker inside ElasticSearch
 */
 
 $config[SearchHubConstants::ACCOUNT_NAME] = "demo";
