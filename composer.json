@@ -19,15 +19,18 @@
     "license": "proprietary",
     "require": {
         "php": ">=7.2",
-        "ext-json": "^1.6",
-        "guzzlehttp/guzzle": "^6.0.0",
-        "spryker/kernel": "^3.30.0",
+        "ext-json": "*",
+        "guzzlehttp/guzzle": "^6.0.0|^7.0.0",
+        "spryker/kernel": "^3.0.0",
         "spryker/log": "^3.0.0",
-        "spryker/search-elasticsearch": "^1.0.0"
+        "spryker/search": ">=8.9.0"
     },
     "require-dev": {
         "codeception/codeception": "^4.1",
         "codeception/module-asserts": "^1.1"
+    },
+    "suggest": {
+        "spryker/search-elasticsearch": "makes SearchHubSuggestResultFormatterPlugin available"
     },
     "autoload": {
         "psr-4": {

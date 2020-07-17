@@ -4,13 +4,13 @@ namespace SearchHub\Client\Plugin\QueryExpander;
 
 use SearchHub\Client\SearchHubFactory;
 use SearchHub\Client\SearchHubRequest;
-use Spryker\Client\SearchElasticsearch\Plugin\ResultFormatter\CompletionResultFormatterPlugin;
+use Spryker\Client\Search\Plugin\Elasticsearch\ResultFormatter\CompletionResultFormatterPlugin;
 use Spryker\Shared\Log\LoggerTrait;
 
 /*
- * requires and supports spryker module search/elasticsearch
+ * supports legacy spryker module spryker/search <= 8.9.0, when spryker/search-elasticsearch is not available
  */
-class SearchHubSuggestResultFormatterPlugin extends CompletionResultFormatterPlugin
+class SearchHubSuggestResultLegacyFormatterPlugin extends CompletionResultFormatterPlugin
 {
 
     use LoggerTrait;
