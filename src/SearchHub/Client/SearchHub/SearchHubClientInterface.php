@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace SearchHub\Client;
+namespace SearchHub\Client\SearchHub;
 
 /**
  * Interface SearchHubClientInterface
  *
- * @package SearchHub\Client
+ * @package SearchHub\Client\SearchHub
  */
 interface SearchHubClientInterface
 {

@@ -1,8 +1,11 @@
-use SearchHub\Shared\SearchHubConstants;
+use SearchHub\Shared\SearchHub\SearchHubConstants;
 use Twig\Cache\FilesystemCache;
 
 // ---------- SearchHub
 /*
+
+* add "SearchHub" to your $config[KernelConstants::PROJECT_NAMESPACES]
+*
 * add 'new SearchHubQueryExpanderPlugin(),' in \Pyz\Client\Catalog\CatalogDependencyProvider::createCatalogSearchQueryExpanderPlugins
 * just before 'new PaginatedQueryExpanderPlugin(),'
 * to activate query optimization for SEARCH results

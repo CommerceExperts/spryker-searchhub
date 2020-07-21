@@ -1,9 +1,9 @@
 <?php
 
-namespace SearchHub\Client\Plugin\QueryExpander;
+namespace SearchHub\Client\SearchHub\Plugin\QueryExpander;
 
-use SearchHub\Client\SearchHubFactory;
-use SearchHub\Client\SearchHubRequest;
+use SearchHub\Client\SearchHub\SearchHubFactory;
+use SearchHub\Client\SearchHub\SearchHubRequest;
 use Spryker\Client\SearchElasticsearch\Plugin\ResultFormatter\CompletionResultFormatterPlugin;
 use Spryker\Shared\Log\LoggerTrait;
 

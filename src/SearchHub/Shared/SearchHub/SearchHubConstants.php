@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace SearchHub\Shared;
+namespace SearchHub\Shared\SearchHub;
 
 /**
  * Interface SearchHubConstants
- * @package SearchHub\Shared
+ * @package SearchHub\Shared\SearchHub
  */
 interface SearchHubConstants
 {

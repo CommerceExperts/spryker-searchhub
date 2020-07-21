@@ -5,10 +5,10 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace SearchHubTest\Client;
+namespace SearchHubTest\Client\SearchHub;
 
 use Codeception\Test\Unit;
-use SearchHub\Client\SearchHubRequest;
+use SearchHub\Client\SearchHub\SearchHubRequest;
 
 /**
  * @group SearchHubTest

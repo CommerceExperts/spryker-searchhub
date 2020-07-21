@@ -2,19 +2,20 @@
 
 declare(strict_types=1);
 
-namespace SearchHub\Client;
+namespace SearchHub\Client\SearchHub;
 
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response;
-use SearchHub\Shared\SearchHubConstants;
+use SearchHub\Shared\SearchHub\SearchHubConstants;
 use Spryker\Client\Kernel\AbstractClient;
+use Spryker\Shared\Config\Config;
 use Spryker\Shared\Log\LoggerTrait;
 
 /**
  * Class SearchhubClient
- * @package SearchHub\Client
+ * @package SearchHub\Client\SearchHub
  */
 class SearchHubClient extends AbstractClient implements SearchHubClientInterface
 {
@@ -26,13 +27,13 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
     /**
      * @var mixed
      */
-    private $config;
+    protected $config;
 
     use LoggerTrait;
 
-    public function __construct($config)
+    public function __construct()
     {
-        $this->config = $config;
+        $this->config = Config::getInstance();
     }
 
     /**
@@ -67,7 +68,7 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
         }
     }
 
-    private function optimizeSaaS(SearchHubRequest $searchHubRequest, bool $isSuggest)
+    protected function optimizeSaaS(SearchHubRequest $searchHubRequest, bool $isSuggest)
     {
         $client = $this->getHttpClient();
         $uri = $this->getRequestUri($searchHubRequest->getUserQuery(), $isSuggest);
@@ -86,7 +87,7 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
 
     }
 
-    private function optimizeLocal(SearchHubRequest $searchHubRequest, bool $isSuggest)
+    protected function optimizeLocal(SearchHubRequest $searchHubRequest, bool $isSuggest)
     {
         $mappings = $this->loadMappings($this->config->get($isSuggest ? SearchHubConstants::MAPPING_SUGGESTS_ENDPOINT : SearchHubConstants::MAPPING_QUERIES_ENDPOINT ));
         if (isset($mappings[$searchHubRequest->getUserQuery()]) ) {
@@ -153,7 +154,7 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
      * @return array
      * @throws Exception
      */
-    private function loadMappings(string $uri): array
+    protected function loadMappings(string $uri): array
     {
         $cache = $this->config->get(SearchHubConstants::MAPPING_CACHE);
         $key = $cache->generateKey("SearchHubClient", $uri);

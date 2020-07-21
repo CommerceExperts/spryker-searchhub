@@ -1,15 +1,15 @@
 <?php
 
 
-namespace SearchHub\Client\Plugin\QueryExpander;
+namespace SearchHub\Client\SearchHub\Plugin\QueryExpander;
 
 use Elastica\Query\MultiMatch;
 use Spryker\Client\Kernel\AbstractPlugin;
-use Spryker\Client\SearchExtension\Dependency\Plugin\QueryExpanderPluginInterface;
-use Spryker\Client\SearchExtension\Dependency\Plugin\QueryInterface;
+use Spryker\Client\Search\Dependency\Plugin\QueryExpanderPluginInterface;
+use Spryker\Client\Search\Dependency\Plugin\QueryInterface;
 use Spryker\Shared\Log\LoggerTrait;
 
-class SearchStrategyOptimizerQueryExpanderPlugin extends AbstractPlugin implements QueryExpanderPluginInterface
+class SearchStrategyOptimizerLegacyQueryExpanderPlugin extends AbstractPlugin implements QueryExpanderPluginInterface
 {
     use LoggerTrait;
 
@@ -46,7 +46,7 @@ class SearchStrategyOptimizerQueryExpanderPlugin extends AbstractPlugin implemen
             $searchQuery->getSearchQuery()->getParams(){self::QUERY}->setParams($coreQuery);
         }
         if (!$optimized) {
-            $this->getLogger()->info("SearchStrategyOptimizerQueryExpanderPlugin failed to optimize search strategy. Maybe you have plugged me in too late in CatalogDependencyProvider?");
+            $this->getLogger()->info("SearchStrategyOptimizerLegacyQueryExpanderPlugin failed to optimize search strategy. Maybe you have plugged me in too late in CatalogDependencyProvider?");
         }
         return $searchQuery;
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace SearchHub\Client;
+namespace SearchHub\Client\SearchHub;
 
 use Spryker\Client\Kernel\AbstractFactory;
 use Spryker\Shared\Config\Config;

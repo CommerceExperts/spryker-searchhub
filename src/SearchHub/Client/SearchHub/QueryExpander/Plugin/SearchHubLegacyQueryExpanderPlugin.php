@@ -1,15 +1,15 @@
 <?php
 
-namespace SearchHub\Client\Plugin\QueryExpander;
+namespace SearchHub\Client\SearchHub\Plugin\QueryExpander;
 
-use SearchHub\Client\SearchHubFactory;
-use SearchHub\Client\SearchHubRequest;
+use SearchHub\Client\SearchHub\SearchHubFactory;
+use SearchHub\Client\SearchHub\SearchHubRequest;
 use Spryker\Client\Kernel\AbstractPlugin;
-use Spryker\Client\SearchExtension\Dependency\Plugin\QueryExpanderPluginInterface;
-use Spryker\Client\SearchExtension\Dependency\Plugin\QueryInterface;
+use Spryker\Client\Search\Dependency\Plugin\QueryExpanderPluginInterface;
+use Spryker\Client\Search\Dependency\Plugin\QueryInterface;
 use Spryker\Shared\Log\LoggerTrait;
 
-class SearchHubQueryExpanderPlugin extends AbstractPlugin implements QueryExpanderPluginInterface
+class SearchHubLegacyQueryExpanderPlugin extends AbstractPlugin implements QueryExpanderPluginInterface
 {
 
     use LoggerTrait;

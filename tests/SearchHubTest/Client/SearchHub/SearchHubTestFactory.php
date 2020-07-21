@@ -1,11 +1,11 @@
 <?php
 
 
-namespace SearchHubTest\Client;
+namespace SearchHubTest\Client\SearchHub;
 
 
-use SearchHub\Client\SearchHubClient;
-use SearchHub\Client\SearchHubClientInterface;
+use SearchHub\Client\SearchHub\SearchHubClient;
+use SearchHub\Client\SearchHub\SearchHubClientInterface;
 
 class SearchHubTestFactory
 {

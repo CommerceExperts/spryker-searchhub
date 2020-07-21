@@ -1,6 +1,6 @@
 <?php
 
-namespace SearchHub\Client;
+namespace SearchHub\Client\SearchHub;
 
 class SearchHubRequest
 {

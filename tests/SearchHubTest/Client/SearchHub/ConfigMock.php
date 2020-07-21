@@ -1,10 +1,10 @@
 <?php
 
 
-namespace SearchHubTest\Client;
+namespace SearchHubTest\Client\SearchHub;
 
 
-use SearchHub\Shared\SearchHubConstants;
+use SearchHub\Shared\SearchHub\SearchHubConstants;
 use Twig\Cache\FilesystemCache;
 
 class ConfigMock
