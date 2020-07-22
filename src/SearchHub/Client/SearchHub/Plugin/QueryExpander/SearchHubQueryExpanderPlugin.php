@@ -2,7 +2,6 @@
 
 namespace SearchHub\Client\SearchHub\Plugin\QueryExpander;
 
-use SearchHub\Client\SearchHub\SearchHubFactory;
 use SearchHub\Client\SearchHub\SearchHubRequest;
 use Spryker\Client\Kernel\AbstractPlugin;
 use Spryker\Client\SearchExtension\Dependency\Plugin\QueryExpanderPluginInterface;
@@ -11,7 +10,6 @@ use Spryker\Shared\Log\LoggerTrait;
 
 class SearchHubQueryExpanderPlugin extends AbstractPlugin implements QueryExpanderPluginInterface
 {
-
     use LoggerTrait;
 
     /**
@@ -22,7 +20,7 @@ class SearchHubQueryExpanderPlugin extends AbstractPlugin implements QueryExpand
      */
     public function expandQuery(QueryInterface $searchQuery, array $requestParameters = [])
     {
-        $searchHubClient = $this->getClient()->getSearchHubClient();
+        $searchHubClient = $this->getClient();
         $searchHubRequest = new SearchHubRequest(trim(strtolower($searchQuery->getSearchString())));
         $searchHubRequest = $searchHubClient->optimizeQuery($searchHubRequest);
         $optimizedQuery = $searchHubRequest->getSearchQuery();

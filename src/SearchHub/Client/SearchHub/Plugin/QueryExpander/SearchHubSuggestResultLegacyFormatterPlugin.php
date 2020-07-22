@@ -2,7 +2,6 @@
 
 namespace SearchHub\Client\SearchHub\Plugin\QueryExpander;
 
-use SearchHub\Client\SearchHub\SearchHubFactory;
 use SearchHub\Client\SearchHub\SearchHubRequest;
 use Spryker\Client\Search\Plugin\Elasticsearch\ResultFormatter\CompletionResultFormatterPlugin;
 use Spryker\Shared\Log\LoggerTrait;
@@ -12,7 +11,6 @@ use Spryker\Shared\Log\LoggerTrait;
  */
 class SearchHubSuggestResultLegacyFormatterPlugin extends CompletionResultFormatterPlugin
 {
-
     use LoggerTrait;
 
     const BEST_MATCHES = "best matches";
@@ -42,7 +40,7 @@ class SearchHubSuggestResultLegacyFormatterPlugin extends CompletionResultFormat
             return $completions;
         }
 
-        $searchHubRequest = $this->factory()->getSearchHubClient()
+        $searchHubRequest = $this->getClient()
             ->optimizeSuggestQuery(new SearchHubRequest(trim(strtolower($requestParameters["q"]))));
 
         if ($searchHubRequest->getIsException()) {
@@ -64,13 +62,4 @@ class SearchHubSuggestResultLegacyFormatterPlugin extends CompletionResultFormat
         }
         return $completions;
     }
-
-    /**
-     * @return SearchHubFactory
-     */
-    protected function factory(): SearchHubFactory
-    {
-        return new SearchHubFactory();
-    }
-
 }

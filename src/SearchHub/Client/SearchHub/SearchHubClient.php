@@ -19,17 +19,17 @@ use Spryker\Shared\Log\LoggerTrait;
  */
 class SearchHubClient extends AbstractClient implements SearchHubClientInterface
 {
+    use LoggerTrait;
+
     /**
      * @var ClientInterface
      */
     protected $httpClient;
 
     /**
-     * @var mixed
+     * @var Config
      */
     protected $config;
-
-    use LoggerTrait;
 
     public function __construct()
     {
@@ -175,7 +175,7 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
         return json_decode($mappings, true);
     }
 
-    private function loadMappingsFromCache(string $cacheFile)
+    protected function loadMappingsFromCache(string $cacheFile)
     {
         if (file_exists($cacheFile) ) {
             if (time() - filemtime($cacheFile) < $this->config->get(SearchHubConstants::MAPPING_CACHE_TTL)) {
@@ -196,7 +196,7 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
      * @param $mappingsRaw
      * @return array
      */
-    private function indexMappings($mappingsRaw): array
+    protected function indexMappings($mappingsRaw): array
     {
         $indexedMappings = array();
         if (isset($mappingsRaw["mappings"]) && is_array($mappingsRaw["mappings"])) { // v1
