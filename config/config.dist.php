@@ -37,3 +37,10 @@ $config[SearchHubConstants::REQUEST_TIMEOUT] = '1000';
 $config[SearchHubConstants::USE_SAAS_MODE] = false;
 $config[SearchHubConstants::SMARTQUERY_ENDPOINT] = 'https://test.searchhub.io/smartquery/v1/demo.de';
 $config[SearchHubConstants::SMARTSUGGEST_ENDPOINT] = 'https://test.searchhub.io/smartsuggest/v1/demo.de';
+
+/*
+* optional. Can be used if you want to use
+* a) relative redirect URLs
+* b) different stages (dev, int, prod)
+*/
+$config[SearchHubConstants::REDIRECTS_BASE_URL] = 'https://www.my-shop.com';

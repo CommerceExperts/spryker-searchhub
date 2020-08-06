@@ -93,8 +93,13 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
         if (isset($mappings[$searchHubRequest->getUserQuery()]) ) {
             $mapping = $mappings[$searchHubRequest->getUserQuery()];
             if (is_array($mapping)) {
-                if (isset($mapping["redirect"]) && strpos($mapping["redirect"], 'http') === 0) {
-                    header('Location: ' . $mapping["redirect"]);
+                if (isset($mapping["redirect"])) {
+                    if (strpos($mapping["redirect"], 'http') === 0) {
+                        header('Location: ' . $mapping["redirect"]);
+                    }
+                    else {
+                        header('Location: ' . $this->config->get(SearchHubConstants::REDIRECTS_BASE_URL ) . $mapping["redirect"]);
+                    }
                     exit;
                 }
                 else {
