@@ -62,15 +62,15 @@ class SearchHubTest extends Unit
         $this->assertGreaterThan( $durationCached * 10, $durationUncached, "weird. using cached entries is pretty slow (uncached search vs. cache)");
     }
 
-    /**
-     * @return void
-     */
-    public function testOptimizeQuerySaas()
-    {
-        $factory = $this->factory();
-        $searchHubRequest = $factory->getSearchHubClient(ConfigMock::FLAVOUR_SAAS)->optimizeQuery(new SearchHubRequest("notebokk"));
-        $this->assertEquals("notebook", $searchHubRequest->getSearchQuery());
-    }
+//    /**
+//     * @return void
+//     */
+//    public function testOptimizeQuerySaas()
+//    {
+//        $factory = $this->factory();
+//        $searchHubRequest = $factory->getSearchHubClient(ConfigMock::FLAVOUR_SAAS)->optimizeQuery(new SearchHubRequest("notebokk"));
+//        $this->assertEquals("notebook", $searchHubRequest->getSearchQuery());
+//    }
 
     /**
      * @return void
@@ -86,16 +86,16 @@ class SearchHubTest extends Unit
         $this->assertEquals("notebook", $searchHubRequest->getSearchQuery());
     }
 
-    /**
-     * @return void
-     */
-    public function testOptimizeSuggestSaas()
-    {
-        $factory = $this->factory();
-        $searchHubRequest = $factory->getSearchHubClient(ConfigMock::FLAVOUR_SAAS)->optimizeSuggestQuery(new SearchHubRequest("notebokk"));
-
-        $this->assertEquals(json_decode($searchHubRequest->getSearchQuery(), true)[0]["suggestions"][0], "notebook");
-    }
+//    /**
+//     * @return void
+//     */
+//    public function testOptimizeSuggestSaas()
+//    {
+//        $factory = $this->factory();
+//        $searchHubRequest = $factory->getSearchHubClient(ConfigMock::FLAVOUR_SAAS)->optimizeSuggestQuery(new SearchHubRequest("notebokk"));
+//
+//        $this->assertEquals(json_decode($searchHubRequest->getSearchQuery(), true)[0]["suggestions"][0], "notebook");
+//    }
 
     /**
      * @return SearchHubTestFactory
