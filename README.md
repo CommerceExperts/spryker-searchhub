@@ -2,7 +2,7 @@
 
 [![Build Status](https://api.travis-ci.org/CommerceExperts/spryker-searchhub.svg?branch=master)](https://travis-ci.org/CommerceExperts/spryker-searchhub)
 
-provided bei CXP Commerce Experts (https://www.commerce-experts.com)
+provided by CXP Commerce Experts (https://www.commerce-experts.com)
 
 ## Installation
 
