@@ -70,7 +70,7 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
 
     protected function optimizeSaaS(SearchHubRequest $searchHubRequest, bool $isSuggest)
     {
-        $client = $this->getHttpClient();
+        $client = $this->getHttpClient((float)$this->config->get(SearchHubConstants::REQUEST_TIMEOUT, 0.01));
         $uri = $this->getRequestUri($searchHubRequest->getUserQuery(), $isSuggest);
         try {
             $optimizedQuery = $client->get($uri);
@@ -89,6 +89,8 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
 
     protected function optimizeLocal(SearchHubRequest $searchHubRequest, bool $isSuggest)
     {
+        $startTimestamp = microtime(true);
+
         $mappings = $this->loadMappings($this->config->get($isSuggest ? SearchHubConstants::MAPPING_SUGGESTS_ENDPOINT : SearchHubConstants::MAPPING_QUERIES_ENDPOINT ));
         if (isset($mappings[$searchHubRequest->getUserQuery()]) ) {
             $mapping = $mappings[$searchHubRequest->getUserQuery()];
@@ -100,11 +102,23 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
                     else {
                         header('Location: ' . $this->config->get(SearchHubConstants::REDIRECTS_BASE_URL ) . $mapping["redirect"]);
                     }
+                    $this->report(
+                        $searchHubRequest->getUserQuery(),
+                        $mapping["masterQuery"],
+                        microtime(true) - $startTimestamp,
+                        true
+                    );
                     exit;
                 }
                 else {
                     //v2
                     $searchHubRequest->setSearchQuery($mapping["masterQuery"]);
+                    $this->report(
+                        $searchHubRequest->getUserQuery(),
+                        $mapping["masterQuery"],
+                        microtime(true) - $startTimestamp,
+                        false
+                    );
                 }
             } else {
                 //v1
@@ -119,6 +133,65 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
 
     }
 
+   /**
+     * @param string $originalSearchString
+     * @param string $optimizedSearchString
+     * @param float $duration
+     * @param bool $redirect
+     *
+     * @return void
+     */
+    protected function report(
+        string $originalSearchString,
+        string $optimizedSearchString,
+        float $duration,
+        bool $redirect
+    ): void {
+        $event = sprintf(
+            '[
+                {
+                    "from": "%s",
+                    "to": "%s",
+                    "redirect": "%s",
+                    "durationNs": %d,
+                    "tenant": {
+                        "name": "%s",
+                        "channel": "%s"
+                    },
+                    "queryMapperType": "SimpleQueryMapper",
+                    "statsType": "mappingStats",
+                    "libVersion": "unknown"
+                }
+            ]',
+            $originalSearchString,
+            $optimizedSearchString,
+            $redirect,
+            $duration * 1000 * 1000 * 1000,
+            $this->config->get(SearchHubConstants::ACCOUNT_NAME),
+            strtolower(Store::getInstance()->getStoreName())
+        );
+
+        $promise = $this->getHttpClient((float) 0.01)->requestAsync(
+            'post',
+            'https://import.searchhub.io/reportStats',
+            [
+                'headers' => [
+                    'apikey' => $this->config->get(SearchHubConstants::API_KEY),
+                    'X-Consumer-Username' => $this->config->get(SearchHubConstants::ACCOUNT_NAME),
+                    'Content-type' => 'application/json',
+                ],
+                'body' => $event,
+            ]
+        );
+        try {
+            $promise->wait();
+        } catch (\Exception $ex) {
+             /*
+              * will throw a timeout exception which we ignore, as we don't want to wait for any result
+              */
+        }
+    }
+
     /**
      * Get Http Client
      *
@@ -126,11 +199,11 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
      *
      * @return ClientInterface
      */
-    protected function getHttpClient(): ClientInterface
+    protected function getHttpClient(float $timeout): ClientInterface
     {
         if ($this->httpClient === null) {
             $this->httpClient = new Client([
-                'timeout' => (float) $this->config->get(SearchHubConstants::REQUEST_TIMEOUT, 0.01),
+                'timeout' => $timeout,
             ]);
         }
         return $this->httpClient;
@@ -167,7 +240,7 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
         $mappings = $this->loadMappingsFromCache($key);
         if ($mappings === null ) {
             try {
-                $mappingsResponse = $this->getHttpClient()->get($uri, ['headers' => ['apikey' => $this->config->get(SearchHubConstants::API_KEY)]]);
+                $mappingsResponse = $this->getHttpClient((float)$this->config->get(SearchHubConstants::REQUEST_TIMEOUT, 0.01))->get($uri, ['headers' => ['apikey' => $this->config->get(SearchHubConstants::API_KEY)]]);
                 assert($mappingsResponse instanceof Response);
                 $indexedMappings = $this->indexMappings(json_decode($mappingsResponse->getBody()->getContents(), true));
                 $cache->write($key, json_encode($indexedMappings));
@@ -186,7 +259,7 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
             if (time() - filemtime($cacheFile) < $this->config->get(SearchHubConstants::MAPPING_CACHE_TTL)) {
                 return file_get_contents($cacheFile);
             } else {
-                $lastModifiedResponse = $this->getHttpClient()->get($this->config->get(SearchHubConstants::MAPPING_LASTMODIFIED_ENDPOINT), ['headers' => ['apikey' => $this->config->get(SearchHubConstants::API_KEY)]]);
+                $lastModifiedResponse = $this->getHttpClient((float)$this->config->get(SearchHubConstants::REQUEST_TIMEOUT, 0.01))->get($this->config->get(SearchHubConstants::MAPPING_LASTMODIFIED_ENDPOINT), ['headers' => ['apikey' => $this->config->get(SearchHubConstants::API_KEY)]]);
                 assert($lastModifiedResponse instanceof Response);
                 if (filemtime($cacheFile) > ((int)($lastModifiedResponse->getBody()->getContents()) / 1000 + $this->config->get(SearchHubConstants::MAPPING_CACHE_TTL))) {
                     touch($cacheFile);
