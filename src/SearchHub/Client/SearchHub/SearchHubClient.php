@@ -11,6 +11,7 @@ use GuzzleHttp\Psr7\Response;
 use SearchHub\Shared\SearchHub\SearchHubConstants;
 use Spryker\Client\Kernel\AbstractClient;
 use Spryker\Shared\Config\Config;
+use Spryker\Shared\Kernel\Store;
 use Spryker\Shared\Log\LoggerTrait;
 
 /**
