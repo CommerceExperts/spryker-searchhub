@@ -32,6 +32,11 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
      */
     protected $config;
 
+    /**
+     * @var bool
+     */
+    protected $isReportingEnabled;
+
     public function __construct()
     {
         $this->config = Config::getInstance();
@@ -44,8 +49,10 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
      * @throws Exception
      *
      */
-    public function optimizeQuery(SearchHubRequest $searchHubRequest): SearchHubRequest
+    public function optimizeQuery(SearchHubRequest $searchHubRequest, bool $enableReporting = true): SearchHubRequest
     {
+        $this->isReportingEnabled = $enableReporting;
+        
         if (filter_var($this->config->get(SearchHubConstants::USE_SAAS_MODE), FILTER_VALIDATE_BOOLEAN)) {
             return $this->optimizeSaaS($searchHubRequest, false);
         } else {
@@ -53,15 +60,17 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
         }
     }
 
-    /**0
+    /**
      * @param SearchHubRequest $searchHubRequest
      *
      * @return SearchHubRequest
      * @throws Exception
      *
      */
-    public function optimizeSuggestQuery(SearchHubRequest $searchHubRequest): SearchHubRequest
+    public function optimizeSuggestQuery(SearchHubRequest $searchHubRequest, bool $enableReporting = true): SearchHubRequest
     {
+        $this->isReportingEnabled = $enableReporting;
+        
         if (filter_var($this->config->get(SearchHubConstants::USE_SAAS_MODE), FILTER_VALIDATE_BOOLEAN)) {
             return $this->optimizeSaaS($searchHubRequest, true);
         } else {
@@ -148,6 +157,10 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
         float $duration,
         bool $redirect
     ): void {
+        if (!$this->isReportingEnabled) {
+            return;
+        }
+        
         $event = sprintf(
             '[
                 {
