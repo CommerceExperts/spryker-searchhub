@@ -53,10 +53,15 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
     {
         $this->isReportingEnabled = $enableReporting;
         
-        if (filter_var($this->config->get(SearchHubConstants::USE_SAAS_MODE), FILTER_VALIDATE_BOOLEAN)) {
-            return $this->optimizeSaaS($searchHubRequest, false);
-        } else {
-            return $this->optimizeLocal($searchHubRequest, false);
+        try {
+            if (filter_var($this->config->get(SearchHubConstants::USE_SAAS_MODE), FILTER_VALIDATE_BOOLEAN)) {
+                return $this->optimizeSaaS($searchHubRequest, false);
+            } else {
+                return $this->optimizeLocal($searchHubRequest, false);
+            }
+        } catch (\Exception $e) {
+            $searchHubRequest->setSearchQuery($searchHubRequest->getUserQuery());
+            return $searchHubRequest;
         }
     }
 
@@ -70,11 +75,16 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
     public function optimizeSuggestQuery(SearchHubRequest $searchHubRequest, bool $enableReporting = true): SearchHubRequest
     {
         $this->isReportingEnabled = $enableReporting;
-        
-        if (filter_var($this->config->get(SearchHubConstants::USE_SAAS_MODE), FILTER_VALIDATE_BOOLEAN)) {
-            return $this->optimizeSaaS($searchHubRequest, true);
-        } else {
-            return $this->optimizeLocal($searchHubRequest, true);
+
+        try {
+            if (filter_var($this->config->get(SearchHubConstants::USE_SAAS_MODE), FILTER_VALIDATE_BOOLEAN)) {
+                return $this->optimizeSaaS($searchHubRequest, true);
+            } else {
+                return $this->optimizeLocal($searchHubRequest, true);
+            }
+        } catch (\Exception $e) {
+            $searchHubRequest->setSearchQuery($searchHubRequest->getUserQuery());
+            return $searchHubRequest;
         }
     }
 
