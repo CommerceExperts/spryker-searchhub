@@ -213,7 +213,29 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
              /*
               * will throw a timeout exception which we ignore, as we don't want to wait for any result
               */
+            $this->logAfterReporting($originalSearchString, $optimizedSearchString, $duration, $redirect);
         }
+    }
+
+    /**
+     * This method is intended to be extended on PYZ / Project Level
+     * Add any form of logging you want or keep it empty
+     *
+     * @param string $originalSearchString
+     * @param string $optimizedSearchString
+     * @param float $duration
+     * @param bool $redirect
+     * 
+     * @return void
+     */
+    protected function logAfterReporting(
+        string $originalSearchString,
+        string $optimizedSearchString,
+        float $duration,
+        bool $redirect
+    ): void
+    {
+        // Put your logging here
     }
 
     /**
