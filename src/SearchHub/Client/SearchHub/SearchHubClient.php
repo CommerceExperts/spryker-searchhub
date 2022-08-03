@@ -11,6 +11,7 @@ use GuzzleHttp\Psr7\Response;
 use SearchHub\Shared\SearchHub\SearchHubConstants;
 use Spryker\Client\Kernel\AbstractClient;
 use Spryker\Shared\Config\Config;
+use Spryker\Shared\Kernel\Store;
 use Spryker\Shared\Log\LoggerTrait;
 
 /**
@@ -31,6 +32,11 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
      */
     protected $config;
 
+    /**
+     * @var bool
+     */
+    protected $isReportingEnabled;
+
     public function __construct()
     {
         $this->config = Config::getInstance();
@@ -43,28 +49,42 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
      * @throws Exception
      *
      */
-    public function optimizeQuery(SearchHubRequest $searchHubRequest): SearchHubRequest
+    public function optimizeQuery(SearchHubRequest $searchHubRequest, bool $enableReporting = true): SearchHubRequest
     {
-        if (filter_var($this->config->get(SearchHubConstants::USE_SAAS_MODE), FILTER_VALIDATE_BOOLEAN)) {
-            return $this->optimizeSaaS($searchHubRequest, false);
-        } else {
-            return $this->optimizeLocal($searchHubRequest, false);
+        $this->isReportingEnabled = $enableReporting;
+        
+        try {
+            if (filter_var($this->config->get(SearchHubConstants::USE_SAAS_MODE), FILTER_VALIDATE_BOOLEAN)) {
+                return $this->optimizeSaaS($searchHubRequest, false);
+            } else {
+                return $this->optimizeLocal($searchHubRequest, false);
+            }
+        } catch (\Exception $e) {
+            $searchHubRequest->setSearchQuery($searchHubRequest->getUserQuery());
+            return $searchHubRequest;
         }
     }
 
-    /**0
+    /**
      * @param SearchHubRequest $searchHubRequest
      *
      * @return SearchHubRequest
      * @throws Exception
      *
      */
-    public function optimizeSuggestQuery(SearchHubRequest $searchHubRequest): SearchHubRequest
+    public function optimizeSuggestQuery(SearchHubRequest $searchHubRequest, bool $enableReporting = true): SearchHubRequest
     {
-        if (filter_var($this->config->get(SearchHubConstants::USE_SAAS_MODE), FILTER_VALIDATE_BOOLEAN)) {
-            return $this->optimizeSaaS($searchHubRequest, true);
-        } else {
-            return $this->optimizeLocal($searchHubRequest, true);
+        $this->isReportingEnabled = $enableReporting;
+
+        try {
+            if (filter_var($this->config->get(SearchHubConstants::USE_SAAS_MODE), FILTER_VALIDATE_BOOLEAN)) {
+                return $this->optimizeSaaS($searchHubRequest, true);
+            } else {
+                return $this->optimizeLocal($searchHubRequest, true);
+            }
+        } catch (\Exception $e) {
+            $searchHubRequest->setSearchQuery($searchHubRequest->getUserQuery());
+            return $searchHubRequest;
         }
     }
 
@@ -147,6 +167,10 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
         float $duration,
         bool $redirect
     ): void {
+        if (!$this->isReportingEnabled) {
+            return;
+        }
+        
         $event = sprintf(
             '[
                 {
@@ -189,7 +213,29 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
              /*
               * will throw a timeout exception which we ignore, as we don't want to wait for any result
               */
+            $this->logAfterReporting($originalSearchString, $optimizedSearchString, $duration, $redirect);
         }
+    }
+
+    /**
+     * This method is intended to be extended on PYZ / Project Level
+     * Add any form of logging you want or keep it empty
+     *
+     * @param string $originalSearchString
+     * @param string $optimizedSearchString
+     * @param float $duration
+     * @param bool $redirect
+     * 
+     * @return void
+     */
+    protected function logAfterReporting(
+        string $originalSearchString,
+        string $optimizedSearchString,
+        float $duration,
+        bool $redirect
+    ): void
+    {
+        // Put your logging here
     }
 
     /**

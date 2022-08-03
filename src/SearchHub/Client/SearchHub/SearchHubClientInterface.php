@@ -16,18 +16,20 @@ interface SearchHubClientInterface
      * variant of the same search
      *
      * @param SearchHubRequest $searchHubRequest
+     * @param bool $enableReporting
      *
      * @return SearchHubRequest
      */
-    public function optimizeQuery(SearchHubRequest $searchHubRequest): SearchHubRequest;
+    public function optimizeQuery(SearchHubRequest $searchHubRequest, bool $enableReporting = true): SearchHubRequest;
 
     /**
      * Optimize Suggest Query by sending it to searchhub checking whether there is good suggestion
      *
      * @param SearchHubRequest $searchHubRequest
+     * @param bool $enableReporting
      *
      * @return SearchHubRequest
      */
-    public function optimizeSuggestQuery(SearchHubRequest $searchHubRequest): SearchHubRequest;
+    public function optimizeSuggestQuery(SearchHubRequest $searchHubRequest, bool $enableReporting = true): SearchHubRequest;
 
 }
