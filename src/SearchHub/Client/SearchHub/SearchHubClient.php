@@ -176,7 +176,7 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
                 {
                     "from": "%s",
                     "to": "%s",
-                    "redirect": "%s",
+                    "redirect": %s,
                     "durationNs": %d,
                     "tenant": {
                         "name": "%s",
@@ -189,7 +189,7 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
             ]',
             $originalSearchString,
             $optimizedSearchString,
-            $redirect,
+            $redirect == null ? "null" : "\"$redirect\"",
             $duration * 1000 * 1000 * 1000,
             $this->config->get(SearchHubConstants::ACCOUNT_NAME),
             strtolower(Store::getInstance()->getStoreName())
