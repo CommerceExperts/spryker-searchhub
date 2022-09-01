@@ -116,17 +116,17 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
             $mapping = $mappings[$searchHubRequest->getUserQuery()];
             if (is_array($mapping)) {
                 if (isset($mapping["redirect"])) {
-                    if (strpos($mapping["redirect"], 'http') === 0) {
-                        header('Location: ' . $mapping["redirect"]);
+                    $redirectUrl = $mapping["redirect"];
+                    if (strpos($mapping["redirect"], 'http') === false) {
+                        $redirectUrl = $this->config->get(SearchHubConstants::REDIRECTS_BASE_URL ) . $mapping["redirect"];
                     }
-                    else {
-                        header('Location: ' . $this->config->get(SearchHubConstants::REDIRECTS_BASE_URL ) . $mapping["redirect"]);
-                    }
+                    header('Location: ' . $redirectUrl);
+                    
                     $this->report(
                         $searchHubRequest->getUserQuery(),
                         $mapping["masterQuery"],
                         microtime(true) - $startTimestamp,
-                        true
+                        $redirectUrl
                     );
                     exit;
                 }
@@ -137,7 +137,7 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
                         $searchHubRequest->getUserQuery(),
                         $mapping["masterQuery"],
                         microtime(true) - $startTimestamp,
-                        false
+                        null
                     );
                 }
             } else {
@@ -157,7 +157,7 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
      * @param string $originalSearchString
      * @param string $optimizedSearchString
      * @param float $duration
-     * @param bool $redirect
+     * @param string $redirect
      *
      * @return void
      */
@@ -165,7 +165,7 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
         string $originalSearchString,
         string $optimizedSearchString,
         float $duration,
-        bool $redirect
+        string $redirect
     ): void {
         if (!$this->isReportingEnabled) {
             return;
@@ -176,7 +176,7 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
                 {
                     "from": "%s",
                     "to": "%s",
-                    "redirect": "%s",
+                    "redirect": %s,
                     "durationNs": %d,
                     "tenant": {
                         "name": "%s",
@@ -189,7 +189,7 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
             ]',
             $originalSearchString,
             $optimizedSearchString,
-            $redirect,
+            $redirect == null ? "null" : "\"$redirect\"",
             $duration * 1000 * 1000 * 1000,
             $this->config->get(SearchHubConstants::ACCOUNT_NAME),
             strtolower(Store::getInstance()->getStoreName())
@@ -232,7 +232,7 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
         string $originalSearchString,
         string $optimizedSearchString,
         float $duration,
-        bool $redirect
+        string $redirect
     ): void
     {
         // Put your logging here
