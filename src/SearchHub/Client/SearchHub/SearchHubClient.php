@@ -232,7 +232,7 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
         string $originalSearchString,
         string $optimizedSearchString,
         float $duration,
-        bool $redirect
+        string $redirect
     ): void
     {
         // Put your logging here
