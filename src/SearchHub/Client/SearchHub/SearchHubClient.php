@@ -77,7 +77,7 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
         $this->isReportingEnabled = $enableReporting;
 
         try {
-            if (filter_var($this->config->get(SearchHubConstants::USE_SAAS_MODE), FILTER_VALIDATE_BOOLEAN)) {
+            if (filter_var($this->config->get(SearchHubConstants::USE_SUGGEST_SAAS_MODE), FILTER_VALIDATE_BOOLEAN)) {
                 return $this->optimizeSaaS($searchHubRequest, true);
             } else {
                 return $this->optimizeLocal($searchHubRequest, true);

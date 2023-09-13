@@ -68,6 +68,11 @@ interface SearchHubConstants
     /**
      *
      */
+    public const USE_SUGGEST_SAAS_MODE = 'SEARCHHUB:USE_SUGGEST_SAAS_MODE';
+
+    /**
+     *
+     */
     public const REDIRECTS_BASE_URL = 'SEARCHHUB:REDIRECTS_BASE_URL';
 
 }
