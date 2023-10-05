@@ -137,7 +137,7 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
                         $searchHubRequest->getUserQuery(),
                         $mapping["masterQuery"],
                         microtime(true) - $startTimestamp,
-                        null
+                        ''
                     );
                 }
             } else {
