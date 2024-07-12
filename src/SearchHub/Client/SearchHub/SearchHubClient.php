@@ -124,7 +124,7 @@ class SearchHubClient extends AbstractClient implements SearchHubClientInterface
                     
                     $this->report(
                         $searchHubRequest->getUserQuery(),
-                        $mapping["masterQuery"],
+                        '',
                         microtime(true) - $startTimestamp,
                         $redirectUrl
                     );
