@@ -19,7 +19,7 @@ use Twig\Cache\FilesystemCache;
 * to optimize the search strategy used by Spryker inside ElasticSearch
 */
 
-$config[SearchHubConstants::ACCOUNT_NAME] = "demo";
+$config[SearchHubConstants::ACCOUNT_NAME] = "cxp";
 
 $config[SearchHubConstants::API_KEY] = "request your api key from info@commerce-experts.com";
 
@@ -35,9 +35,9 @@ $config[SearchHubConstants::REQUEST_TIMEOUT] = '1000';
 * by setting $config[SearchHubConstants::USE_SAAS_MODE]=true
 */
 $config[SearchHubConstants::USE_SAAS_MODE] = false;
-$config[SearchHubConstants::SMARTQUERY_ENDPOINT] = 'https://test.searchhub.io/smartquery/v1/demo.de';
+$config[SearchHubConstants::SMARTQUERY_ENDPOINT] = 'https://test.searchhub.io/smartquery/v1/cxp.demo';
 $config[SearchHubConstants::USE_SUGGEST_SAAS_MODE] = false;
-$config[SearchHubConstants::SMARTSUGGEST_ENDPOINT] = 'https://test.searchhub.io/smartsuggest/v1/demo.de';
+$config[SearchHubConstants::SMARTSUGGEST_ENDPOINT] = 'https://test.searchhub.io/smartsuggest/v1/cxp.demo';
 
 /*
 * optional. Can be used if you want to use
